@@ -22,22 +22,22 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </Link>
         </NavbarItem>
         <NavbarItem >
-          <Link  isBlock href="#" color="foreground">
+          <Link isDisabled isBlock href="#" color="foreground">
             Tournament Draw
           </Link>
         </NavbarItem>
         <NavbarItem>
-          <Link isBlock color="foreground" href="#">
+          <Link isDisabled isBlock color="foreground" href="#">
             Game Logs
           </Link>
         </NavbarItem>
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem className="hidden lg:flex">
-          <Link isBlock color="success" href="/log">Log a Game</Link>
+          <Link  isBlock color="success" href="/log">Log a Game</Link>
         </NavbarItem>
         <NavbarItem>
-          <Button as={Link} color="success" href="#" variant="shadow" >
+          <Button isDisabled as={Link} color="success" href="#" variant="shadow" >
             Join Club
           </Button>
         </NavbarItem>
