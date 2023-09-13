@@ -27,7 +27,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </Link>
         </NavbarItem>
         <NavbarItem>
-          <Link isDisabled isBlock color="foreground" href="#">
+          <Link isBlock color="foreground" href="#">
             Game Logs
           </Link>
         </NavbarItem>
