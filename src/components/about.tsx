@@ -26,9 +26,9 @@ const officers = [
     lichess: "bababooeyacc",
   },
   {
-    name: "Maxx Muldoon",
+    name: "Dylan Gambino",
     role: "Treasurer",
-    chesscom: "thisisnottheperson",
+    chesscom: "dillpicklehaha",
   },
   {
     name: "Tristan Krizen",
