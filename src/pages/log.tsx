@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   useDisclosure,
   Button,
@@ -13,24 +13,63 @@ import {
   ModalBody,
   ModalFooter,
 } from "@nextui-org/react";
-import {BiLogoGmail} from "react-icons/bi";
+import { BiLogoGmail } from "react-icons/bi";
 
 const Log: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-
+  const [whiteName, setWhiteName] = useState("");
+  const [whiteEmail, setWhiteEmail] = useState("");
+  const [blackName, setBlackName] = useState("");
+  const [blackEmail, setBlackEmail] = useState("");
+  const [pgn, setPgn] = useState("");
+  const [date, setDate] = useState("");
+  const [gameType, setGameType] = useState("");
   const handleOpenModal = () => {
     onOpen();
+  };
+  const handleSubmit = async () => {
+    const fullWhiteEmail = `${whiteEmail}@hjuhsd.k12.ca.us`;
+    const fullBlackEmail = `${blackEmail}@hjuhsd.k12.ca.us`;
+    const response = await fetch("/api/submitGame", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        whiteName,
+        whiteEmail : fullWhiteEmail,
+        blackName,
+        blackEmail : fullBlackEmail,
+        pgn,
+        date,
+        gameType,
+      }),
+    
+    });
+
+    if (response.ok) {
+      onClose();
+    } else {
+    }
   };
 
   return (
     <div className="flex flex-col h-screen justify-center items-center max-w-lg mx-auto">
       <div className="text-center p-8">
         <h2 className="text-2xl font-bold mb-4">White</h2>
-        <Input className="mb-4 w-full" variant="underlined" label="Name" />
         <Input
+          value={whiteName}
+          className="mb-4 w-full"
+          variant="underlined"
+          label="Name"
+          onChange={(e) => setWhiteName(e.target.value)}
+        />
+        <Input
+          onChange={(e) => setWhiteEmail(e.target.value)}
           variant="underlined"
           className="w-full"
           placeholder="Email"
+          value={whiteEmail}
           startContent={<BiLogoGmail />}
           endContent={
             <div className="pointer-events-none flex items-center">
@@ -52,11 +91,19 @@ const Log: React.FC = () => {
 
       <div className="text-center bg-black text-white p-8">
         <h2 className="text-2xl font-bold mb-4">Black</h2>
-        <Input className="mb-4 w-full" variant="underlined" label="Name" />
         <Input
+          onChange={(e) => setBlackName(e.target.value)}
+          value={blackName}
+          className="mb-4 w-full"
+          variant="underlined"
+          label="Name"
+        />
+        <Input
+          onChange={(e) => setBlackEmail(e.target.value)}
           variant="underlined"
           className="w-full"
           placeholder="Email"
+          value={blackEmail}
           startContent={<BiLogoGmail />}
           endContent={
             <div className="pointer-events-none flex items-center">
@@ -79,9 +126,21 @@ const Log: React.FC = () => {
                 <Textarea
                   className="mb-4 w-full"
                   label="Enter PGN"
+                  value={pgn}
+                  onChange={(e) => setPgn(e.target.value)}
                 />
-                <Input type="datetime-local" className="mb-4 w-full" />
-                <Select className="mb-4 w-full" placeholder="Select game type">
+                <Input
+                  value={date}
+                  className="mb-4 w-full"
+                  label="mm/dd/yyyy"
+                  onChange={(e) => setDate(e.target.value)}
+                />
+                <Select
+                  value={gameType}
+                  className="mb-4 w-full"
+                  placeholder="Select game type"
+                  onChange={(e) => setGameType(e.target.value)}
+                >
                   <SelectItem key="lichess" value="lichess">
                     Lichess
                   </SelectItem>
@@ -97,7 +156,7 @@ const Log: React.FC = () => {
                 <Button color="danger" variant="light" onPress={onClose}>
                   Cancel
                 </Button>
-                <Button color="primary" onPress={onClose}>
+                <Button color="primary" onPress={handleSubmit}>
                   Submit Game
                 </Button>
               </ModalFooter>
