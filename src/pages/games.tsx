@@ -18,9 +18,10 @@ type Props = {
 
 export const getServerSideProps: GetServerSideProps<Props> = async () => {
     const fetchedGames = await fetchGames();
-    const games: Game[] = fetchedGames.map(({ _id, ...rest }) => rest);
+    const games = fetchedGames.map(({ _id, ...rest }) => rest) as unknown as Game[]; // Explicitly cast to Game[]
     return { props: { games } };
   };
+  
   
   
 const GamesPage: React.FC<Props> = ({ games }) => {
