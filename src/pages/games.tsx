@@ -54,6 +54,8 @@ const GamesPage: React.FC<Props> = ({ games }) => {
   }>({});
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [currentPgn, setCurrentPgn] = useState("");
+  const [ngames, setGames] = useState<Game[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     games.forEach(async (game) => {
@@ -84,7 +86,16 @@ const GamesPage: React.FC<Props> = ({ games }) => {
       setLoadingStates((prev) => ({ ...prev, [game.whiteUser]: false }));
     });
   }, [games]);
+  useEffect(() => {
+    const fetchGamesFromEdge = async () => {
+      const res = await fetch('/api/fetchGamesEdge');
+      const data: Game[] = await res.json();
+      setGames(data);
+      setLoading(false);
+    };
 
+    fetchGamesFromEdge();
+  }, []);
   const sortedGames = [...games].sort((a, b) => {
     const dateA = a.date.split("/").reverse().join("");
     const dateB = b.date.split("/").reverse().join("");
