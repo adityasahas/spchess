@@ -39,28 +39,26 @@ type Props = {
 
 export const getServerSideProps: GetServerSideProps<Props> = async () => {
   const fetchedGames = await fetchGames();
-  const games = fetchedGames.map(
-    ({ _id, ...rest }) => rest
-  ) as unknown as Game[];
+  const games = fetchedGames.map(({ _id, ...rest }) => ({
+    ...rest,
+    _id: _id.toString(),  
+  })) as unknown as Game[];  
   return { props: { games } };
 };
 
 const GamesPage: React.FC<Props> = ({ games }) => {
   const [avatars, setAvatars] = useState<{ [key: string]: string }>({});
   const [profileURLs, setProfileURLs] = useState<{ [key: string]: string }>({});
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [currentPgn, setCurrentPgn] = useState("");
   const [loadingStates, setLoadingStates] = useState<{
     [key: string]: boolean;
   }>({});
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [currentPgn, setCurrentPgn] = useState("");
 
   useEffect(() => {
     games.forEach(async (game) => {
-      setLoadingStates((prevLoadingStates) => ({
-        ...prevLoadingStates,
-        [game.whiteUser]: true,
-        [game.blackUser]: true,
-      }));
+      setLoadingStates((prev) => ({ ...prev, [game.whiteUser]: true }));
+
       if (game.gameType === "chess.com") {
         const whiteResponse = await fetch(
           `https://api.chess.com/pub/player/${game.whiteUser}`
@@ -81,20 +79,12 @@ const GamesPage: React.FC<Props> = ({ games }) => {
           [game.whiteUser]: whiteData.url,
           [game.blackUser]: blackData.url,
         }));
-        setLoadingStates((prevLoadingStates) => ({
-          ...prevLoadingStates,
-          [game.whiteUser]: false,
-          [game.blackUser]: false,
-        }));
-      } else {
-        setLoadingStates((prevLoadingStates) => ({
-          ...prevLoadingStates,
-          [game.whiteUser]: false,
-          [game.blackUser]: false,
-        }));
       }
+
+      setLoadingStates((prev) => ({ ...prev, [game.whiteUser]: false }));
     });
   }, [games]);
+
   const sortedGames = [...games].sort((a, b) => {
     const dateA = a.date.split("/").reverse().join("");
     const dateB = b.date.split("/").reverse().join("");
