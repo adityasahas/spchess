@@ -31,6 +31,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             Game Logs
           </Link>
         </NavbarItem>
+        <NavbarItem>
+          <Link isBlock color="foreground" href="/club">
+            Chess.com Club
+          </Link>
+        </NavbarItem>
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem className="hidden lg:flex">
