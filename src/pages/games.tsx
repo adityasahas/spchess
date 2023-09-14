@@ -15,6 +15,7 @@ import {
   Link,
   useDisclosure,
   AvatarIcon,
+  Spinner,
 } from "@nextui-org/react";
 import { fetchGames } from "../utils/fetchGames";
 import { GetServerSideProps } from "next";
@@ -49,9 +50,17 @@ const GamesPage: React.FC<Props> = ({ games }) => {
   const [profileURLs, setProfileURLs] = useState<{ [key: string]: string }>({});
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [currentPgn, setCurrentPgn] = useState("");
+  const [loadingStates, setLoadingStates] = useState<{
+    [key: string]: boolean;
+  }>({});
 
   useEffect(() => {
     games.forEach(async (game) => {
+      setLoadingStates((prevLoadingStates) => ({
+        ...prevLoadingStates,
+        [game.whiteUser]: true,
+        [game.blackUser]: true,
+      }));
       if (game.gameType === "chess.com") {
         const whiteResponse = await fetch(
           `https://api.chess.com/pub/player/${game.whiteUser}`
@@ -72,6 +81,17 @@ const GamesPage: React.FC<Props> = ({ games }) => {
           [game.whiteUser]: whiteData.url,
           [game.blackUser]: blackData.url,
         }));
+        setLoadingStates((prevLoadingStates) => ({
+          ...prevLoadingStates,
+          [game.whiteUser]: false,
+          [game.blackUser]: false,
+        }));
+      } else {
+        setLoadingStates((prevLoadingStates) => ({
+          ...prevLoadingStates,
+          [game.whiteUser]: false,
+          [game.blackUser]: false,
+        }));
       }
     });
   }, [games]);
@@ -85,72 +105,86 @@ const GamesPage: React.FC<Props> = ({ games }) => {
       <div className="grid grid-cols-2 gap-4">
         {sortedGames.map((game, index) => (
           <Card key={index} className="m-4" style={{ width: "420px" }}>
-            <CardHeader className="justify-between">
-              <div className="flex gap-5">
-                <div className="flex items-center gap-2">
-                  <User
-                    name={game.whiteName}
-                    description={
-                      game.gameType === "chess.com" ? (
-                        <Link size="sm" isExternal href={profileURLs[game.whiteUser]}>Profile</Link>
-                      ) : null
-                    }
-                    avatarProps={{
-                      src: avatars[game.whiteUser] || "/user.png",
-                    }}
-                  />
-                  {game.winner === "white" ? (
-                    <Chip variant="shadow" color="success">
-                      Winner
-                    </Chip>
-                  ) : game.winner === "black" ? (
-                    <Chip color="danger">Loser</Chip>
-                  ) : (
-                    <Chip color="warning">N/A</Chip>
-                  )}
-                </div>
-                <span className="self-center">VS</span>
-                <div className="flex items-center gap-2">
-                  <User
-                    name={game.blackName}
-                    description={
-                      game.gameType === "chess.com" ? (
-                        <Link href={profileURLs[game.blackUser]}>Profile</Link>
-                      ) : null
-                    }
-                    avatarProps={{
-                      src: avatars[game.blackUser] || "/user.png",
-                    }}
-                  />
-                  {game.winner === "black" ? (
-                    <Chip variant="shadow" color="success">
-                      Winner
-                    </Chip>
-                  ) : game.winner === "white" ? (
-                    <Chip color="danger">Loser</Chip>
-                  ) : (
-                    <Chip color="warning">N/A</Chip>
-                  )}
-                </div>
-              </div>
-            </CardHeader>
+            {loadingStates[game.whiteUser] || loadingStates[game.blackUser] ? (
+              <Spinner label="Loading..." color="danger" size="lg" />
+            ) : (
+              <>
+                <CardHeader className="justify-between">
+                  <div className="flex gap-5">
+                    <div className="flex items-center gap-2">
+                      <User
+                        name={game.whiteName}
+                        description={
+                          game.gameType === "chess.com" ? (
+                            <Link
+                              size="sm"
+                              isExternal
+                              href={profileURLs[game.whiteUser]}
+                            >
+                              Profile
+                            </Link>
+                          ) : null
+                        }
+                        avatarProps={{
+                          src: avatars[game.whiteUser] || "/user.png",
+                        }}
+                      />
+                      {game.winner === "white" ? (
+                        <Chip variant="shadow" color="success">
+                          Winner
+                        </Chip>
+                      ) : game.winner === "black" ? (
+                        <Chip color="danger">Loser</Chip>
+                      ) : (
+                        <Chip color="warning">N/A</Chip>
+                      )}
+                    </div>
+                    <span className="self-center">VS</span>
+                    <div className="flex items-center gap-2">
+                      <User
+                        name={game.blackName}
+                        description={
+                          game.gameType === "chess.com" ? (
+                            <Link href={profileURLs[game.blackUser]}>
+                              Profile
+                            </Link>
+                          ) : null
+                        }
+                        avatarProps={{
+                          src: avatars[game.blackUser] || "/user.png",
+                        }}
+                      />
+                      {game.winner === "black" ? (
+                        <Chip variant="shadow" color="success">
+                          Winner
+                        </Chip>
+                      ) : game.winner === "white" ? (
+                        <Chip color="danger">Loser</Chip>
+                      ) : (
+                        <Chip color="warning">N/A</Chip>
+                      )}
+                    </div>
+                  </div>
+                </CardHeader>
 
-            <CardBody>
-              <p>Platform: {game.gameType}</p>
-            </CardBody>
-            <CardFooter className="justify-between">
-              <p>{game.date}</p>
-              <Button
-                onClick={() => {
-                  setCurrentPgn(game.pgn);
-                  onOpen();
-                }}
-                variant="light"
-                color="success"
-              >
-                View Game
-              </Button>
-            </CardFooter>
+                <CardBody>
+                  <p>Platform: {game.gameType}</p>
+                </CardBody>
+                <CardFooter className="justify-between">
+                  <p>{game.date}</p>
+                  <Button
+                    onClick={() => {
+                      setCurrentPgn(game.pgn);
+                      onOpen();
+                    }}
+                    variant="light"
+                    color="success"
+                  >
+                    View Game
+                  </Button>
+                </CardFooter>
+              </>
+            )}
           </Card>
         ))}
         <Modal
