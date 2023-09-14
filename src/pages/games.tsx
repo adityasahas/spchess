@@ -41,12 +41,13 @@ export const getServerSideProps: GetServerSideProps<Props> = async () => {
   const fetchedGames = await fetchGames();
   const games = fetchedGames.map(({ _id, ...rest }) => ({
     ...rest,
-    _id: _id.toString(),  
-  })) as unknown as Game[];  
+    _id: _id.toString(),
+  })) as unknown as Game[];
   return { props: { games } };
 };
 
 const GamesPage: React.FC<Props> = ({ games }) => {
+  const [initialLoading, setInitialLoading] = useState(true);
   const [avatars, setAvatars] = useState<{ [key: string]: string }>({});
   const [profileURLs, setProfileURLs] = useState<{ [key: string]: string }>({});
   const [loadingStates, setLoadingStates] = useState<{
@@ -84,12 +85,27 @@ const GamesPage: React.FC<Props> = ({ games }) => {
       setLoadingStates((prev) => ({ ...prev, [game.whiteUser]: false }));
     });
   }, [games]);
+  useEffect(() => {
+    // New effect to handle the initial loading screen
+    const timer = setTimeout(() => {
+      setInitialLoading(false);
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const sortedGames = [...games].sort((a, b) => {
     const dateA = a.date.split("/").reverse().join("");
     const dateB = b.date.split("/").reverse().join("");
     return dateB.localeCompare(dateA);
   });
+  if (initialLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Spinner label="Loading..." color="danger" size="lg" />
+      </div>
+    );
+  }
   return (
     <div className="flex justify-center">
       <div className="grid grid-cols-2 gap-4">
