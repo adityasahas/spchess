@@ -12,6 +12,7 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
+  Checkbox,
 } from "@nextui-org/react";
 import { BiLogoGmail } from "react-icons/bi";
 
@@ -24,6 +25,10 @@ const Log: React.FC = () => {
   const [pgn, setPgn] = useState("");
   const [date, setDate] = useState("");
   const [gameType, setGameType] = useState("");
+  const [whiteUser, setWhiteUser] = useState("");
+  const [blackUser, setBlackUser] = useState("");
+  const [winner, setWinner] = useState<"white" | "black" | null>(null);
+
   const handleOpenModal = () => {
     onOpen();
   };
@@ -37,14 +42,16 @@ const Log: React.FC = () => {
       },
       body: JSON.stringify({
         whiteName,
-        whiteEmail : fullWhiteEmail,
+        whiteEmail: fullWhiteEmail,
         blackName,
-        blackEmail : fullBlackEmail,
+        blackEmail: fullBlackEmail,
         pgn,
         date,
         gameType,
+        whiteUser,
+        blackUser,
+        winner,
       }),
-    
     });
 
     if (response.ok) {
@@ -57,12 +64,26 @@ const Log: React.FC = () => {
     <div className="flex flex-col h-screen justify-center items-center max-w-lg mx-auto">
       <div className="text-center p-8">
         <h2 className="text-2xl font-bold mb-4">White</h2>
+        <Checkbox
+          isSelected={winner === "white"}
+          onValueChange={() => setWinner(winner === "white" ? null : "white")}
+          className="mb-4"
+        >
+          Winner
+        </Checkbox>
         <Input
           value={whiteName}
           className="mb-4 w-full"
           variant="underlined"
           label="Name"
           onChange={(e) => setWhiteName(e.target.value)}
+        />
+        <Input
+          value={whiteUser}
+          className="mb-4 w-full"
+          variant="underlined"
+          label="Chess Username"
+          onChange={(e) => setWhiteUser(e.target.value)}
         />
         <Input
           onChange={(e) => setWhiteEmail(e.target.value)}
@@ -79,6 +100,7 @@ const Log: React.FC = () => {
             </div>
           }
         />
+        
       </div>
 
       <Divider className="mx-10" />
@@ -91,12 +113,26 @@ const Log: React.FC = () => {
 
       <div className="text-center bg-black text-white p-8">
         <h2 className="text-2xl font-bold mb-4">Black</h2>
+        <Checkbox
+          isSelected={winner === "black"}
+          onValueChange={() => setWinner(winner === "black" ? null : "black")}
+          className="mb-4"
+        >
+          Winner
+        </Checkbox>
         <Input
           onChange={(e) => setBlackName(e.target.value)}
           value={blackName}
           className="mb-4 w-full"
           variant="underlined"
           label="Name"
+        />
+        <Input
+          value={blackUser}
+          className="mb-4 w-full"
+          variant="underlined"
+          label="Chess Username"
+          onChange={(e) => setBlackUser(e.target.value)}
         />
         <Input
           onChange={(e) => setBlackEmail(e.target.value)}
@@ -141,9 +177,7 @@ const Log: React.FC = () => {
                   placeholder="Select game type"
                   onChange={(e) => setGameType(e.target.value)}
                 >
-                  <SelectItem key="lichess" value="lichess">
-                    Lichess
-                  </SelectItem>
+                  
                   <SelectItem key="chess.com" value="chess.com">
                     Chess.com
                   </SelectItem>

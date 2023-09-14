@@ -9,6 +9,9 @@ import {
   Divider,
   Chip,
   Badge,
+  Spinner,
+  Link,
+  Spacer
 } from "@nextui-org/react";
 import { BsBook } from "react-icons/bs";
 import { GiPodium } from "react-icons/gi";
@@ -47,6 +50,7 @@ interface Officer {
   description: string;
   chesscom: string;
   lichess?: string;
+  url?: string;
 }
 
 interface ChessStats {
@@ -54,6 +58,7 @@ interface ChessStats {
     rating: number;
   };
   online?: boolean;
+  url?: string;
 }
 const AboutUs: React.FC = () => {
   const [chessData, setChessData] = useState<Record<string, ChessStats>>({});
@@ -72,9 +77,14 @@ const AboutUs: React.FC = () => {
         );
         const onlineStatus = await onlineResponse.json();
 
+        const playerURL = await fetch(
+          `https://api.chess.com/pub/player/${officer.chesscom}`
+        );
+        const playerData = await playerURL.json();
         newChessData[officer.chesscom] = {
           last: stats.chess_rapid?.last || { rating: "N/A" },
           online: onlineStatus.online,
+          url: playerData.url,
         };
       }
       setChessData(newChessData);
@@ -106,7 +116,12 @@ const AboutUs: React.FC = () => {
                     <h4 className="text-lg font-semibold">{officer.name}</h4>
 
                     <Chip color="success" variant="shadow" className="ml-2">
-                      {chessData[officer.chesscom]?.last.rating || "N/A"}
+                      {chessData[officer.chesscom]?.last.rating !==
+                      undefined ? (
+                        chessData[officer.chesscom]?.last.rating
+                      ) : (
+                        <Spinner size="sm" />
+                      )}
                     </Chip>
                   </div>
                   <h5 className="text-sm text-gray-500">{officer.role}</h5>
@@ -120,10 +135,15 @@ const AboutUs: React.FC = () => {
                     chess username: {officer.chesscom}
                   </Chip>
                 )}
-                {officer.lichess && (
-                  <Chip color="warning" variant="shadow">
-                    lichess username: {officer.lichess}
-                  </Chip>
+                <Spacer y={4} />
+                {chessData[officer.chesscom]?.url && (
+                  <Link
+                    href={chessData[officer.chesscom]?.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    profile
+                  </Link>
                 )}
               </CardFooter>
             </Card>
@@ -135,35 +155,35 @@ const AboutUs: React.FC = () => {
         <div className="flex justify-center">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-12 items-center">
             <Card className="p-4 rounded-lg shadow-lg w-full">
-                 <CardHeader className="flex items-center">
-              <BsBook size="1.5em" className="mr-2" />
-              <h4 className="text-lg font-semibold">Lessons</h4>
-            </CardHeader>
-            <CardBody className="text-base">
-              <p>
-                We offer chess lessons every week. Whether you're a beginner or an intermediate
-                player, our lessons are tailored to help you improve your
-                skills.
-              </p>
-            </CardBody>
-          </Card>
+              <CardHeader className="flex items-center">
+                <BsBook size="1.5em" className="mr-2" />
+                <h4 className="text-lg font-semibold">Lessons</h4>
+              </CardHeader>
+              <CardBody className="text-base">
+                <p>
+                  We offer chess lessons every week. Whether you're a beginner
+                  or an intermediate player, our lessons are tailored to help
+                  you improve your skills.
+                </p>
+              </CardBody>
+            </Card>
 
-          <Card className="p-4 rounded-lg shadow-lg w-full">
-            <CardHeader className="flex items-center">
-              <GiPodium size="1.5em" className="mr-2" />
-              <h4 className="text-lg font-semibold">Tournaments</h4>
-            </CardHeader>
-            <CardBody className="text-base">
-              <p>
-                We host monthly championships where you can compete against
-                other club members. These tournaments offer a great way to apply
-                what you've learned and gain real-world experience.
-              </p>
-            </CardBody>
-          </Card>
+            <Card className="p-4 rounded-lg shadow-lg w-full">
+              <CardHeader className="flex items-center">
+                <GiPodium size="1.5em" className="mr-2" />
+                <h4 className="text-lg font-semibold">Tournaments</h4>
+              </CardHeader>
+              <CardBody className="text-base">
+                <p>
+                  We host monthly championships where you can compete against
+                  other club members. These tournaments offer a great way to
+                  apply what you've learned and gain real-world experience.
+                </p>
+              </CardBody>
+            </Card>
+          </div>
         </div>
       </div>
-    </div>
     </div>
   );
 };
