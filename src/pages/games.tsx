@@ -50,11 +50,17 @@ const GamesPage: React.FC<Props> = ({ games }) => {
   const [avatars, setAvatars] = useState<{ [key: string]: string }>({});
   const [profileURLs, setProfileURLs] = useState<{ [key: string]: string }>({});
   const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean }>({});
+  const [fetchedUsers, setFetchedUsers] = useState<Set<string>>(new Set()); // New state for caching
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [currentPgn, setCurrentPgn] = useState("");
 
   const fetchPlayerData = async (whiteUser: string, blackUser: string) => {
-    setLoadingStates((prev) => ({ ...prev, [whiteUser]: true }));
+    // Check if we've already fetched this data
+    if (fetchedUsers.has(whiteUser) && fetchedUsers.has(blackUser)) {
+      return;
+    }
+    
+    setLoadingStates((prev) => ({ ...prev, [whiteUser]: true, [blackUser]: true }));
     
     const [whiteResponse, blackResponse] = await Promise.all([
       fetch(`https://api.chess.com/pub/player/${whiteUser}`),
@@ -78,7 +84,9 @@ const GamesPage: React.FC<Props> = ({ games }) => {
       [blackUser]: blackData.url,
     }));
 
-    setLoadingStates((prev) => ({ ...prev, [whiteUser]: false }));
+    setLoadingStates((prev) => ({ ...prev, [whiteUser]: false, [blackUser]: false }));
+    
+    setFetchedUsers((prevUsers) => new Set([...prevUsers, whiteUser, blackUser])); // Add to cache
   };
 
   useEffect(() => {
