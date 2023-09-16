@@ -1,5 +1,5 @@
 import React from 'react';
-import { Divider, Button, Link } from '@nextui-org/react';
+import { Divider, Button, Link, Snippet } from '@nextui-org/react';
 
 const Join = () => {
   return (
@@ -14,7 +14,7 @@ const Join = () => {
 
       <div className="mb-4 w-full">
         <h4 className="text-xl font-semibold mb-2">Google Classroom:</h4>
-        <p className="leading-normal">Use code ABC123 to join our Google Classroom.</p>
+        <p className="leading-normal">Use code <Snippet variant="bordered" symbol="">h2dlccu</Snippet> to join our Google Classroom.</p>
       </div>
 
       <Divider className="my-4 w-4/5" />
