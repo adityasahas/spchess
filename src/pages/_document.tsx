@@ -20,6 +20,7 @@ export default class MyDocument extends Document {
 
           <meta name="twitter:title" content="SP Chess Club" /> 
           <meta name="twitter:description" content="Chess Club website for Sierra Pacific High School Chess Club" />
+          <Analytics/>
 
         </Head>
         <body>
