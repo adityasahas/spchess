@@ -19,7 +19,7 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-  Code
+  Code,
 } from "@nextui-org/react";
 import { fetchGames } from "../utils/fetchGames";
 import { GetServerSideProps } from "next";
@@ -59,7 +59,7 @@ const GamesPage: React.FC<Props> = ({ games }) => {
   const [fetchedUsers, setFetchedUsers] = useState<Set<string>>(new Set()); // New state for caching
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [currentPgn, setCurrentPgn] = useState("");
-
+  const [lichessUrl, setLichessUrl] = useState<string | null>(null);
   const fetchPlayerData = async (whiteUser: string, blackUser: string) => {
     // Check if we've already fetched this data
     if (fetchedUsers.has(whiteUser) && fetchedUsers.has(blackUser)) {
@@ -116,12 +116,55 @@ const GamesPage: React.FC<Props> = ({ games }) => {
     const dateB = new Date(b.date);
     return dateB.getTime() - dateA.getTime();
   });
-  
+  const rearrangeLichessUrl = (url: string) => {
+    const urlSegments = url.split("/");
+    if (urlSegments.length === 5 && urlSegments[3] === "embed") {
+      return `${urlSegments[0]}//${urlSegments[2]}/embed/${urlSegments[4]}`;
+    }
+    return url;
+  };
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text).catch((err) => {
       console.error("Failed to copy text: ", err);
     });
   };
+  const importToLichess = async (pgn: string) => {
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer lip_jkrLhXVZ7Kai3GZdmaR2",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ pgn }),
+    };
+
+    try {
+      const response = await fetch(
+        "https://lichess.org/api/import",
+        requestOptions
+      );
+      const data = await response.json();
+      console.log("Successfully imported game to Lichess: ", data);
+
+      const gameID = data.url.split("/").pop();
+      const embedUrl = `https://lichess.org/embed/${gameID}`;
+
+      setLichessUrl(embedUrl);
+    } catch (err) {
+      console.error("Failed to import game to Lichess:", err);
+    }
+  };
+
+  useEffect(() => {
+    if (isOpen && currentPgn) {
+      importToLichess(currentPgn).then(() => {
+        console.log(
+          "Successfully imported PGN to Lichess, URL is: ",
+          lichessUrl
+        );
+      });
+    }
+  }, [isOpen, currentPgn]);
 
   return (
     <div className="flex flex-wrap justify-center overflow-auto">
@@ -198,8 +241,13 @@ const GamesPage: React.FC<Props> = ({ games }) => {
                   </CardHeader>
 
                   <CardBody>
-  <p>Platform: {game.gameType === 'otb' ? 'over the board' : game.gameType}</p>
-</CardBody>
+                    <p>
+                      Platform:{" "}
+                      {game.gameType === "otb"
+                        ? "over the board"
+                        : game.gameType}
+                    </p>
+                  </CardBody>
 
                   <CardFooter className="justify-between">
                     <Code>{game.date}</Code>
@@ -221,10 +269,11 @@ const GamesPage: React.FC<Props> = ({ games }) => {
         ))}
         <Modal
           backdrop="blur"
-          size="5xl"
+          size="full"
+          placement="center"
           isOpen={isOpen}
           onOpenChange={onOpenChange}
-          placement="center"
+          scrollBehavior="inside"
         >
           <ModalContent>
             {(onClose) => (
@@ -233,7 +282,14 @@ const GamesPage: React.FC<Props> = ({ games }) => {
                   PGN Data
                 </ModalHeader>
                 <ModalBody>
-                  <pre>{currentPgn}</pre>
+                  {/* <Code>{currentPgn}</Code> */}
+                  {lichessUrl && (
+                    <iframe
+                      src={`${lichessUrl}`}
+                      className="w-auto h-full aspect-video "
+                      allowTransparency={true}
+                    ></iframe>
+                  )}
                 </ModalBody>
                 <ModalFooter>
                   <Popover placement="left">
