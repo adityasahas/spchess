@@ -7,7 +7,7 @@ const Hero: React.FC = () => {
       <div className="text-6xl font-bold mb-4">
         Sierra Pacific Chess Club
       </div>
-      <div className="text-xl mb-8">
+      <div className="text-xl font-bold  text-center mb-4">
         A high school chess club based in Hanford, California.
       </div>
       <Button  as={Link} color="success" href="/join" variant="shadow">

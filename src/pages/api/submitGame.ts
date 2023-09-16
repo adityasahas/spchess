@@ -9,7 +9,7 @@ export default async function submitGame(req: NextApiRequest, res: NextApiRespon
     try {
       const games = db.collection("games"); 
       const result: InsertOneResult<Document> = await games.insertOne(req.body);
-      res.status(201).json({ success: true, insertedId: result.insertedId }); // Using insertedId
+      res.status(201).json({ success: true, insertedId: result.insertedId }); 
     } catch (error) {
       console.error("Error inserting data:", error);
       res.status(400).json({ success: false });

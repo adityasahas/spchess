@@ -14,6 +14,7 @@ import {
   ModalFooter,
   Checkbox,
   Snippet,
+  Tooltip,
 } from "@nextui-org/react";
 import { BiLogoGmail } from "react-icons/bi";
 
@@ -87,13 +88,19 @@ const Log: React.FC = () => {
     <div className="flex flex-col h-screen justify-center items-center max-w-lg mx-auto sm:px-4">
       <div className="text-center p-8 w-full">
         <h2 className="text-2xl font-bold mb-4">White</h2>
-        <Checkbox
-          isSelected={winner === "white"}
-          onValueChange={() => setWinner(winner === "white" ? null : "white")}
-          className="mb-4"
-        >
-          Winner
-        </Checkbox>
+        <Tooltip content="don't select if stalemate">
+          <div>
+            <Checkbox
+              isSelected={winner === "white"}
+              onValueChange={() =>
+                setWinner(winner === "white" ? null : "white")
+              }
+              className="mb-4"
+            >
+              Winner
+            </Checkbox>
+          </div>
+        </Tooltip>
         <Input
           value={whiteName}
           className="mb-4 w-full"
@@ -135,13 +142,19 @@ const Log: React.FC = () => {
 
       <div className="text-center bg-black text-white p-8 w-full">
         <h2 className="text-2xl font-bold mb-4">Black</h2>
-        <Checkbox
-          isSelected={winner === "black"}
-          onValueChange={() => setWinner(winner === "black" ? null : "black")}
-          className="mb-4"
-        >
-          Winner
-        </Checkbox>
+        <Tooltip content="don't select if stalemate">
+          <div>
+            <Checkbox
+              isSelected={winner === "black"}
+              onValueChange={() =>
+                setWinner(winner === "black" ? null : "black")
+              }
+              className="mb-4"
+            >
+              Winner
+            </Checkbox>
+          </div>
+        </Tooltip>
         <Input
           onChange={(e) => setBlackName(e.target.value)}
           value={blackName}

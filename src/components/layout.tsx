@@ -1,5 +1,15 @@
-import React, { ReactNode, useState } from 'react';
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button, NavbarMenu, NavbarMenuItem, NavbarMenuToggle } from '@nextui-org/react';
+import React, { ReactNode, useState } from "react";
+import {
+  Navbar,
+  NavbarBrand,
+  NavbarContent,
+  NavbarItem,
+  Link,
+  Button,
+  NavbarMenu,
+  NavbarMenuItem,
+  NavbarMenuToggle,
+} from "@nextui-org/react";
 
 interface LayoutProps {
   children: ReactNode;
@@ -9,20 +19,32 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const menuItems = [
-    { title: 'Home', link: '/', disabled: false },
-    { title: 'Tournament Draw', link: '#', disabled: true },
-    { title: 'Game Archive', link: '/games', disabled: false },
-    { title: 'Chess.com Club', link: '/club', disabled: false },
+    { title: "Home", link: "/", disabled: false },
+    { title: "Tournament Draw", link: "#", disabled: true },
+    { title: "Game Archive", link: "/games", disabled: false },
+    { title: "Chess.com Club", link: "/club", disabled: false },
   ];
 
   return (
-    <div className="flex flex-col min-h-screen w-full" style={{ width: '100% !important' }}>
-<Navbar onMenuOpenChange={setIsMenuOpen} className='w-full' style={{ width: '100% !important' }}>
+    <div
+      className="flex flex-col min-h-screen w-full"
+      style={{ width: "100% !important" }}
+    >
+      <Navbar
+        onMenuOpenChange={setIsMenuOpen}
+        className="w-full"
+        style={{ width: "100% !important" }}
+      >
         <NavbarContent>
-          <NavbarMenuToggle aria-label={isMenuOpen ? 'Close menu' : 'Open menu'} className="sm:hidden" />
+          <NavbarMenuToggle
+            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+            className="sm:hidden"
+          />
           <NavbarBrand>
             <Link color="foreground" href="/" aria-current="page">
-              <p className="font-bold text-inherit">Sierra Pacific Chess Club</p>
+              <p className="font-bold text-inherit">
+                Sierra Pacific Chess Club
+              </p>
             </Link>
           </NavbarBrand>
         </NavbarContent>
@@ -41,15 +63,16 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               </Link>
             </NavbarItem>
           ))}
-          
         </NavbarContent>
 
         <NavbarContent justify="end">
           <NavbarItem className="hidden lg:flex">
-            <Link isBlock color="success" href="/log">Log a Game</Link>
+            <Link isBlock color="success" href="/log">
+              Log a Game
+            </Link>
           </NavbarItem>
           <NavbarItem>
-            <Button  as={Link} color="success" href="/join" variant="shadow">
+            <Button as={Link} color="success" href="/join" variant="shadow">
               Join Club
             </Button>
           </NavbarItem>
@@ -77,9 +100,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </NavbarMenu>
       </Navbar>
 
-      <main className="flex-grow">
-        {children}
-      </main>
+      <main className="flex-grow">{children}</main>
       <footer className="flex flex-col text-white text-center py-4">
         <p>&copy; 2023 Sierra Pacific Chess Club</p>
         <p>made by adi</p>
