@@ -112,10 +112,11 @@ const GamesPage: React.FC<Props> = ({ games }) => {
   }, [games]);
 
   const sortedGames = [...games].sort((a, b) => {
-    const dateA = a.date.split("/").reverse().join("");
-    const dateB = b.date.split("/").reverse().join("");
-    return dateB.localeCompare(dateA);
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
+    return dateB.getTime() - dateA.getTime();
   });
+  
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text).catch((err) => {
       console.error("Failed to copy text: ", err);
