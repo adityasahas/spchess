@@ -16,6 +16,10 @@ import {
   useDisclosure,
   AvatarIcon,
   Spinner,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  Code
 } from "@nextui-org/react";
 import { fetchGames } from "../utils/fetchGames";
 import { GetServerSideProps } from "next";
@@ -49,7 +53,9 @@ export const getServerSideProps: GetServerSideProps<Props> = async () => {
 const GamesPage: React.FC<Props> = ({ games }) => {
   const [avatars, setAvatars] = useState<{ [key: string]: string }>({});
   const [profileURLs, setProfileURLs] = useState<{ [key: string]: string }>({});
-  const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean }>({});
+  const [loadingStates, setLoadingStates] = useState<{
+    [key: string]: boolean;
+  }>({});
   const [fetchedUsers, setFetchedUsers] = useState<Set<string>>(new Set()); // New state for caching
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [currentPgn, setCurrentPgn] = useState("");
@@ -59,17 +65,21 @@ const GamesPage: React.FC<Props> = ({ games }) => {
     if (fetchedUsers.has(whiteUser) && fetchedUsers.has(blackUser)) {
       return;
     }
-    
-    setLoadingStates((prev) => ({ ...prev, [whiteUser]: true, [blackUser]: true }));
-    
+
+    setLoadingStates((prev) => ({
+      ...prev,
+      [whiteUser]: true,
+      [blackUser]: true,
+    }));
+
     const [whiteResponse, blackResponse] = await Promise.all([
       fetch(`https://api.chess.com/pub/player/${whiteUser}`),
-      fetch(`https://api.chess.com/pub/player/${blackUser}`)
+      fetch(`https://api.chess.com/pub/player/${blackUser}`),
     ]);
 
     const [whiteData, blackData] = await Promise.all([
       whiteResponse.json(),
-      blackResponse.json()
+      blackResponse.json(),
     ]);
 
     setAvatars((prevAvatars) => ({
@@ -84,9 +94,15 @@ const GamesPage: React.FC<Props> = ({ games }) => {
       [blackUser]: blackData.url,
     }));
 
-    setLoadingStates((prev) => ({ ...prev, [whiteUser]: false, [blackUser]: false }));
-    
-    setFetchedUsers((prevUsers) => new Set([...prevUsers, whiteUser, blackUser])); // Add to cache
+    setLoadingStates((prev) => ({
+      ...prev,
+      [whiteUser]: false,
+      [blackUser]: false,
+    }));
+
+    setFetchedUsers(
+      (prevUsers) => new Set([...prevUsers, whiteUser, blackUser])
+    ); // Add to cache
   };
 
   useEffect(() => {
@@ -100,92 +116,106 @@ const GamesPage: React.FC<Props> = ({ games }) => {
     const dateB = b.date.split("/").reverse().join("");
     return dateB.localeCompare(dateA);
   });
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text).catch((err) => {
+      console.error("Failed to copy text: ", err);
+    });
+  };
 
   return (
-    <div className="flex justify-center">
-      <div className="grid grid-cols-2 gap-4">
+    <div className="flex flex-wrap justify-center overflow-auto">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {sortedGames.map((game, index) => (
-          <Card key={index} className="m-4" style={{ width: "420px" }}>
-            {loadingStates[game.whiteUser] || loadingStates[game.blackUser] ? (
-              <Spinner label="Loading..." color="danger" size="lg" />
-            ) : (
-              <>
-                <CardHeader className="justify-between">
-                  <div className="flex gap-5">
-                    <div className="flex items-center gap-2">
-                      <User
-                        name={game.whiteName}
-                        description={
-                          game.gameType === "chess.com" ? (
-                            <Link
-                              size="sm"
-                              isExternal
-                              href={profileURLs[game.whiteUser]}
-                            >
-                              Profile
-                            </Link>
-                          ) : null
-                        }
-                        avatarProps={{
-                          src: avatars[game.whiteUser] || "/user.png",
-                        }}
-                      />
-                      {game.winner === "white" ? (
-                        <Chip variant="shadow" color="success">
-                          Winner
-                        </Chip>
-                      ) : game.winner === "black" ? (
-                        <Chip color="danger">Loser</Chip>
-                      ) : (
-                        <Chip color="warning">N/A</Chip>
-                      )}
+          <Card key={index} className="mx-4 w-auto sm:w-auto ">
+            <div className="flex flex-col justify-between h-full">
+              {" "}
+              {loadingStates[game.whiteUser] ||
+              loadingStates[game.blackUser] ? (
+                <Spinner label="Loading..." color="danger" size="lg" />
+              ) : (
+                <>
+                  <CardHeader className="justify-between">
+                    <div className="flex gap-5">
+                      <div className="flex flex-col items-center gap-2">
+                        <User
+                          name={game.whiteName}
+                          description={
+                            game.gameType === "chess.com" ? (
+                              <Link
+                                size="sm"
+                                isExternal
+                                href={profileURLs[game.whiteUser]}
+                              >
+                                Profile
+                              </Link>
+                            ) : null
+                          }
+                          avatarProps={{
+                            src: avatars[game.whiteUser] || "/user.png",
+                          }}
+                        />
+                        {game.winner === "white" ? (
+                          <Chip variant="shadow" color="success">
+                            Winner
+                          </Chip>
+                        ) : game.winner === "black" ? (
+                          <Chip color="danger">Loser</Chip>
+                        ) : (
+                          <Chip color="warning">N/A</Chip>
+                        )}
+                      </div>
+                      <span className="self-center">vs</span>
+                      <div className="flex items-center gap-2 flex-col">
+                        <User
+                          name={game.blackName}
+                          description={
+                            game.gameType === "chess.com" ? (
+                              <Link
+                                size="sm"
+                                isExternal
+                                href={profileURLs[game.blackUser]}
+                              >
+                                Profile
+                              </Link>
+                            ) : null
+                          }
+                          avatarProps={{
+                            src: avatars[game.blackUser] || "/user.png",
+                          }}
+                        />
+                        {game.winner === "black" ? (
+                          <Chip variant="shadow" color="success">
+                            Winner
+                          </Chip>
+                        ) : game.winner === "white" ? (
+                          <Chip color="danger">Loser</Chip>
+                        ) : (
+                          <Chip color="warning">N/A</Chip>
+                        )}
+                      </div>
                     </div>
-                    <span className="self-center">VS</span>
-                    <div className="flex items-center gap-2">
-                      <User
-                        name={game.blackName}
-                        description={
-                          game.gameType === "chess.com" ? (
-                            <Link href={profileURLs[game.blackUser]}>
-                              Profile
-                            </Link>
-                          ) : null
-                        }
-                        avatarProps={{
-                          src: avatars[game.blackUser] || "/user.png",
-                        }}
-                      />
-                      {game.winner === "black" ? (
-                        <Chip variant="shadow" color="success">
-                          Winner
-                        </Chip>
-                      ) : game.winner === "white" ? (
-                        <Chip color="danger">Loser</Chip>
-                      ) : (
-                        <Chip color="warning">N/A</Chip>
-                      )}
-                    </div>
-                  </div>
-                </CardHeader>
+                  </CardHeader>
 
-                <CardBody>
-                  <p>Platform: {game.gameType}</p>
-                </CardBody>
-                <CardFooter className="justify-between">
-                  <p>{game.date}</p>
-                  <Button
-                    onClick={() => {
-                      setCurrentPgn(game.pgn);
-                      onOpen();
-                    }}
-                    variant="light"
-                    color="success"
-                  >
-                    View Game
-                  </Button>
-                </CardFooter>
-              </>
-            )}
+                  <CardBody>
+  <p>Platform: {game.gameType === 'otb' ? 'over the board' : game.gameType}</p>
+</CardBody>
+
+                  <CardFooter className="justify-between">
+                    <Code>{game.date}</Code>
+                    <Button
+                      onClick={() => {
+                        setCurrentPgn(game.pgn);
+                        onOpen();
+                      }}
+                      variant="light"
+                      color="success"
+                    >
+                      View Game PGN
+                    </Button>
+                  </CardFooter>
+                </>
+              )}
+            </div>
           </Card>
         ))}
         <Modal
@@ -193,6 +223,7 @@ const GamesPage: React.FC<Props> = ({ games }) => {
           size="5xl"
           isOpen={isOpen}
           onOpenChange={onOpenChange}
+          placement="center"
         >
           <ModalContent>
             {(onClose) => (
@@ -204,6 +235,18 @@ const GamesPage: React.FC<Props> = ({ games }) => {
                   <pre>{currentPgn}</pre>
                 </ModalBody>
                 <ModalFooter>
+                  <Popover placement="left">
+                    <PopoverTrigger>
+                      <Button
+                        onClick={() => copyToClipboard(currentPgn)}
+                        variant="light"
+                        color="primary"
+                      >
+                        Copy PGN
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent>Copied to clipboard!</PopoverContent>
+                  </Popover>
                   <Button color="danger" variant="light" onPress={onClose}>
                     Close
                   </Button>

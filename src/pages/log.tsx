@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   useDisclosure,
   Button,
@@ -13,6 +13,7 @@ import {
   ModalBody,
   ModalFooter,
   Checkbox,
+  Snippet,
 } from "@nextui-org/react";
 import { BiLogoGmail } from "react-icons/bi";
 
@@ -28,11 +29,15 @@ const Log: React.FC = () => {
   const [whiteUser, setWhiteUser] = useState("");
   const [blackUser, setBlackUser] = useState("");
   const [winner, setWinner] = useState<"white" | "black" | null>(null);
+  const [isValid, setIsValid] = useState(false);
 
   const handleOpenModal = () => {
     onOpen();
   };
   const handleSubmit = async () => {
+    if (!isValid) {
+      return;
+    }
     const fullWhiteEmail = `${whiteEmail}@hjuhsd.k12.ca.us`;
     const fullBlackEmail = `${blackEmail}@hjuhsd.k12.ca.us`;
     const response = await fetch("/api/submitGame", {
@@ -59,10 +64,28 @@ const Log: React.FC = () => {
     } else {
     }
   };
+  const checkValid = () => {
+    if (
+      whiteName &&
+      whiteEmail &&
+      blackName &&
+      blackEmail &&
+      pgn &&
+      date &&
+      gameType
+    ) {
+      setIsValid(true);
+    } else {
+      setIsValid(false);
+    }
+  };
+  useEffect(() => {
+    checkValid();
+  }, [whiteName, whiteEmail, blackName, blackEmail, pgn, date, gameType]);
 
   return (
-    <div className="flex flex-col h-screen justify-center items-center max-w-lg mx-auto">
-      <div className="text-center p-8">
+    <div className="flex flex-col h-screen justify-center items-center max-w-lg mx-auto sm:px-4">
+      <div className="text-center p-8 w-full">
         <h2 className="text-2xl font-bold mb-4">White</h2>
         <Checkbox
           isSelected={winner === "white"}
@@ -100,7 +123,6 @@ const Log: React.FC = () => {
             </div>
           }
         />
-        
       </div>
 
       <Divider className="mx-10" />
@@ -111,7 +133,7 @@ const Log: React.FC = () => {
       </div>
       <Divider className="mx-10" />
 
-      <div className="text-center bg-black text-white p-8">
+      <div className="text-center bg-black text-white p-8 w-full">
         <h2 className="text-2xl font-bold mb-4">Black</h2>
         <Checkbox
           isSelected={winner === "black"}
@@ -151,14 +173,20 @@ const Log: React.FC = () => {
         />
       </div>
 
-      <Modal backdrop="blur" size="5xl" isOpen={isOpen} onClose={onClose}>
+      <Modal
+        backdrop="blur"
+        size="full"
+        isOpen={isOpen}
+        onClose={onClose}
+        placement="center"
+      >
         <ModalContent>
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1 text-center">
                 Confirm Game Data
               </ModalHeader>
-              <ModalBody>
+              <ModalBody className="px-4 sm:px-0">
                 <Textarea
                   className="mb-4 w-full"
                   label="Enter PGN"
@@ -177,7 +205,6 @@ const Log: React.FC = () => {
                   placeholder="Select game type"
                   onChange={(e) => setGameType(e.target.value)}
                 >
-                  
                   <SelectItem key="chess.com" value="chess.com">
                     Chess.com
                   </SelectItem>
@@ -186,11 +213,15 @@ const Log: React.FC = () => {
                   </SelectItem>
                 </Select>
               </ModalBody>
-              <ModalFooter>
+              <ModalFooter className="px-4 sm:px-0">
                 <Button color="danger" variant="light" onPress={onClose}>
                   Cancel
                 </Button>
-                <Button color="primary" onPress={handleSubmit}>
+                <Button
+                  color="primary"
+                  onPress={handleSubmit}
+                  disabled={!isValid}
+                >
                   Submit Game
                 </Button>
               </ModalFooter>

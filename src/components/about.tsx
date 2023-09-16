@@ -72,10 +72,7 @@ const AboutUs: React.FC = () => {
         );
         const stats = await response.json();
 
-        const onlineResponse = await fetch(
-          `https://api.chess.com/pub/player/${officer.chesscom}/is-online`
-        );
-        const onlineStatus = await onlineResponse.json();
+       
 
         const playerURL = await fetch(
           `https://api.chess.com/pub/player/${officer.chesscom}`
@@ -83,7 +80,6 @@ const AboutUs: React.FC = () => {
         const playerData = await playerURL.json();
         newChessData[officer.chesscom] = {
           last: stats.chess_rapid?.last || { rating: "N/A" },
-          online: onlineStatus.online,
           url: playerData.url,
         };
       }
@@ -93,13 +89,12 @@ const AboutUs: React.FC = () => {
     fetchChessData();
   }, []);
   return (
-    <div className=" p-12">
-      <h1 className="text-4xl font-bold mb-12 text-center">About Us</h1>
-
-      <div className="flex justify-center">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-12 mb-12">
+    <div className="p-4 md:p-12">
+      <h1 className="text-2xl md:text-4xl font-bold mb-6 md:mb-12 text-center">About Us</h1>
+      <div className="flex flex-col md:flex-row justify-center">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-12 mb-12">
           {officers.map((officer, index) => (
-            <Card
+              <Card
               key={index}
               className="max-w-[540px] p-4 rounded-lg shadow-lg"
             >
@@ -120,7 +115,7 @@ const AboutUs: React.FC = () => {
                       undefined ? (
                         chessData[officer.chesscom]?.last.rating
                       ) : (
-                        <Spinner size="sm" />
+                        <Spinner size="sm" color="white" className="p-4" />
                       )}
                     </Chip>
                   </div>
@@ -150,11 +145,11 @@ const AboutUs: React.FC = () => {
           ))}
         </div>
       </div>
-      <div className="p-12">
-        <h2 className="text-3xl font-bold mb-12 text-center">Stuff We Do</h2>
-        <div className="flex justify-center">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-12 items-center">
-            <Card className="p-4 rounded-lg shadow-lg w-full">
+      <div className="p-4 md:p-12">
+        <h2 className="text-2xl md:text-3xl font-bold mb-6 md:mb-12 text-center">Stuff We Do</h2>
+        <div className="flex flex-col md:flex-row justify-center">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-12 items-center">
+         <Card className="p-4 rounded-lg shadow-lg w-full">
               <CardHeader className="flex items-center">
                 <BsBook size="1.5em" className="mr-2" />
                 <h4 className="text-lg font-semibold">Lessons</h4>

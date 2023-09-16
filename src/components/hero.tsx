@@ -12,7 +12,8 @@ const Hero: React.FC = () => {
       </div>
       <Button 
         color="success"
-        variant="shadow"        
+        variant="shadow" 
+        href="/join"       
       >
         Join Club
       </Button>
