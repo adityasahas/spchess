@@ -31,7 +31,7 @@ const Join = () => {
       <div className="mb-4 w-full">
         <h4 className="text-xl font-semibold mb-2">Contact Information:</h4>
         <p className="leading-normal">
-          Email us at 
+          Email us at <br/>
           <Link href="mailto:25aayushraiyani@hjuhsd.k12.ca.us" className="underline">25aayushraiyani@hjuhsd.k12.ca.us </Link> <br/> or 
             <br/>
           <Link href="mailto:25adityasahasranam@hjuhsd.k12.ca.us" className="underline">25adityasahasranam@hjuhsd.k12.ca.us </Link> 

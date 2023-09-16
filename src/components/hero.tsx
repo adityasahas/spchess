@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '@nextui-org/react';
+import { Button, Link } from '@nextui-org/react';
 
 const Hero: React.FC = () => {
   return (
@@ -10,11 +10,8 @@ const Hero: React.FC = () => {
       <div className="text-xl mb-8">
         A high school chess club based in Hanford, California.
       </div>
-      <Button 
-        color="success"
-        variant="shadow" 
-        href="/join"       
-      >
+      <Button  as={Link} color="success" href="/join" variant="shadow">
+
         Join Club
       </Button>
     </div>
