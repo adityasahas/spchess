@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import {
   Card,
   CardHeader,
@@ -16,6 +16,8 @@ import {
   Badge,
   Chip,
   User,
+  Pagination,
+  Button,
 } from "@nextui-org/react";
 
 interface ClubData {
@@ -99,7 +101,30 @@ const Club = () => {
   const [clubData, setClubData] = useState<ClubData | null>(null);
   const [membersData, setMembersData] = useState<MembersData | null>(null);
   const [matchesData, setMatchesData] = useState<MatchesData | null>(null);
+  const [page, setPage] = useState(1);
+  const rowsPerPage = 5;
 
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalPages = useMemo(() => {
+    return membersData ? Math.ceil(membersData.weekly.length / rowsPerPage) : 0;
+  }, [membersData]);
+
+  const paginatedMembers = useMemo(() => {
+    const start = (currentPage - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+    return membersData ? membersData.weekly.slice(start, end) : [];
+  }, [currentPage, membersData]);
+  const displayedMembers = useMemo(() => {
+    const start = (page - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+    return membersData?.weekly.slice(start, end) || [];
+  }, [membersData, page]);
+
+  const totalMembers = membersData?.weekly.length || 0;
   useEffect(() => {
     fetch(`https://api.chess.com/pub/club/sierra-pacific-chess-club`)
       .then((response) => response.json())
@@ -132,23 +157,21 @@ const Club = () => {
 
   return (
     <>
-    <div className="p-12">
-      <h1 className="text-4xl font-bold mb-4 text-center">
-        Club Dashboard
-      </h1>
-      {clubData && (
-        <div className="text-center mb-12">
-          <Link
-            isBlock
-            isExternal
-            showAnchorIcon
-            href={clubData.join_request}
-            className="text-3xl font-bold mb-12"
-          >
-            Chess.com Club Link
-          </Link>
-        </div>
-      )}
+      <div className="p-12">
+        <h1 className="text-4xl font-bold mb-4 text-center">Club Dashboard</h1>
+        {clubData && (
+          <div className="text-center mb-12">
+            <Link
+              isBlock
+              isExternal
+              showAnchorIcon
+              href={clubData.join_request}
+              className="text-3xl font-bold mb-12"
+            >
+              Chess.com Club Link
+            </Link>
+          </div>
+        )}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
           {clubData ? (
             <Card>
@@ -164,7 +187,6 @@ const Club = () => {
                 <ProgressBar value={clubData.average_daily_rating} />
                 <CircularCount count={clubData.members_count} />
               </CardBody>
-              
             </Card>
           ) : (
             <Spinner />
@@ -177,19 +199,12 @@ const Club = () => {
             <CardBody>
               <Table aria-label="Members Directory">
                 <TableHeader>
-                  <TableColumn>Profile</TableColumn>
                   <TableColumn>Username</TableColumn>
                   <TableColumn>Profile Link</TableColumn>
                 </TableHeader>
-                <TableBody
-                  items={membersData?.weekly || []}
-                  isLoading={!membersData}
-                >
+                <TableBody items={paginatedMembers} isLoading={!membersData}>
                   {(member: Member) => (
                     <TableRow key={member.username}>
-                      <TableCell>
-                        <Avatar src={member.avatar} />
-                      </TableCell>
                       <TableCell>{member.username}</TableCell>
                       <TableCell>
                         {member.url ? (
@@ -209,11 +224,44 @@ const Club = () => {
                     </TableRow>
                   )}
                 </TableBody>
-              </Table>{" "}
-            </CardBody>
-          </Card>
-
-          {/* Matches Card */}
+              </Table>
+              <div className="flex flex-col items-center mt-4">
+          <div className="mb-2">
+            <Pagination
+              showShadow
+              color="success"
+              page={currentPage}
+              total={totalPages}
+              onChange={(page) => setCurrentPage(page)}
+            />
+          </div>
+          
+          <div className="flex items-center">
+            <Button
+              size="sm"
+              variant="flat"
+              color="success"
+              onPress={() =>
+                setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev))
+              }
+              className="mr-2"
+            >
+              Previous
+            </Button>
+            <Button
+              size="sm"
+              variant="flat"
+              color="success"
+              onPress={() =>
+                setCurrentPage((prev) => (prev < totalPages ? prev + 1 : prev))
+              }
+            >
+              Next
+            </Button>
+          </div>
+        </div>
+      </CardBody>
+    </Card>
           <Card>
             <CardHeader>
               <h2 className="text-2xl">Recent Matches</h2>

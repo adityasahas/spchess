@@ -20,9 +20,19 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   const menuItems = [
     { title: "Home", link: "/", disabled: false },
-    { title: "Tournament Draw", link: "#", disabled: true },
+    { title: "Tournament Draw ", link: "#", disabled: true },
     { title: "Game Archive", link: "/games", disabled: false },
     { title: "Chess.com Club", link: "/club", disabled: false },
+  ];
+
+  const mobileMenuItems = [
+    { title: "Home", link: "/", disabled: false },
+    { title: "Tournament Draw (will be open before tournament)", link: "#", disabled: true },
+    { title: "Game Archive", link: "/games", disabled: false },
+    { title: "Chess.com Club", link: "/club", disabled: false },
+    { title: "Admin Portal", link: "/admin", disabled: false },
+    { title: "Log a game", link: "/log", disabled: false },
+
   ];
 
   return (
@@ -79,7 +89,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </NavbarContent>
 
         <NavbarMenu>
-          {menuItems.map((item, index) => (
+          {mobileMenuItems.map((item, index) => (
             <NavbarMenuItem key={`${item.title}-${index}`}>
               <Link
                 color="foreground"
@@ -93,8 +103,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             </NavbarMenuItem>
           ))}
           <NavbarItem>
-            <Button as={Link} color="success" href="/log" variant="ghost">
-              Log a Game
+            <Button as={Link} color="success" href="/join" variant="ghost">
+              Join Club
             </Button>
           </NavbarItem>
         </NavbarMenu>
