@@ -24,6 +24,11 @@ const TournamentRegistrations: React.FC = () => {
   const confirmModal1 = useDisclosure();
   const confirmModal2 = useDisclosure();
   const confirmModal3 = useDisclosure();
+  const confirmModal4 = useDisclosure();
+  const confirmModal5 = useDisclosure();
+  const confirmModal6 = useDisclosure();
+  const confirmModal7 = useDisclosure();
+  const confirmModal8 = useDisclosure();
 
   const fetchData = async () => {
     const res = await fetch("/api/fetchTournamentRegistrations");
@@ -79,7 +84,7 @@ const TournamentRegistrations: React.FC = () => {
             <Button
             fullWidth
               className="mt-4 mb-4 md:mb-0 flex flex-col items-center"
-              variant="ghost"
+              variant="light"
               color="danger"
               size="md"
               onClick={confirmModal1.onOpen}
@@ -152,13 +157,43 @@ const TournamentRegistrations: React.FC = () => {
         isOpen={confirmModal2.isOpen}
         onClose={confirmModal2.onClose}
         onConfirm={confirmModal3.onOpen}
-        message="Are you absolutely sure?"
+        message="are you really sure?"
       />
       <ConfirmationModal
         isOpen={confirmModal3.isOpen}
         onClose={confirmModal3.onClose}
+        onConfirm={confirmModal4.onOpen}
+        message="are you like fosho?"
+      />
+      <ConfirmationModal
+        isOpen={confirmModal4.isOpen}
+        onClose={confirmModal4.onClose}
+        onConfirm={confirmModal5.onOpen}
+        message="really"
+      />
+      <ConfirmationModal
+        isOpen={confirmModal5.isOpen}
+        onClose={confirmModal5.onClose}
+        onConfirm={confirmModal6.onOpen}
+        message="dude"
+      />
+      <ConfirmationModal
+        isOpen={confirmModal6.isOpen}
+        onClose={confirmModal6.onClose}
+        onConfirm={confirmModal7.onOpen}
+        message="come on"
+      />
+      <ConfirmationModal
+        isOpen={confirmModal7.isOpen}
+        onClose={confirmModal7.onClose}
+        onConfirm={confirmModal8.onOpen}
+        message="bro it ain't that serious"
+      />
+      <ConfirmationModal
+        isOpen={confirmModal8.isOpen}
+        onClose={confirmModal8.onClose}
         onConfirm={handleFinalConfirmation}
-        message="Final confirmation. All registrations will be permanently cleared!"
+        message="fine you won"
       />
     </>
   );

@@ -12,7 +12,8 @@ export function ConfirmationModal({ isOpen, onClose, onConfirm, message }: { isO
                 No
               </Button>
               <Button
-                color="primary"
+              variant='shadow'
+                color="danger"
                 onClick={() => {
                   onConfirm();
                   close();
