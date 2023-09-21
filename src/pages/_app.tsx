@@ -8,14 +8,16 @@ import { Analytics } from '@vercel/analytics/react';
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <NextUIProvider>
-      <Layout>
       <NextThemesProvider>
       <main className="dark text-foreground bg-background">
+              <Layout >
+
         <Analytics/>
         <Component {...pageProps} />
+              </Layout>
+
       </main>
       </NextThemesProvider>
-      </Layout>
     </NextUIProvider>
   );
 }
