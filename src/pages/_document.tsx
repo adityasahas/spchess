@@ -17,6 +17,7 @@ export default class MyDocument extends Document {
           <meta property="og:description" content="Chess Club website for Sierra Pacific High School Chess Club" />
           <meta property="og:type" content="website" />
           <meta property="og:url" content="https://spchess.org" />
+          <meta property="og:image" content="https://img.freepik.com/premium-photo/gold-silver-chess-chess-board-game-business-metaphor-leadership-concept_131346-640.jpg" />
 
           <meta name="twitter:title" content="SP Chess Club" /> 
           <meta name="twitter:description" content="Chess Club website for Sierra Pacific High School Chess Club" />
