@@ -18,6 +18,8 @@ import {
   User,
   Pagination,
   Button,
+  CircularProgress,
+  CardFooter,
 } from "@nextui-org/react";
 
 interface ClubData {
@@ -175,19 +177,48 @@ const Club = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
           {clubData ? (
             <Card>
-              <CardHeader>
-                <Avatar src={clubData.icon} />
-                <div className="ml-4">
-                  <h2 className="text-2xl">{clubData.name}</h2>
-                </div>
-              </CardHeader>
-              <CardBody>
-                <p>{clubData.description.slice(3, -4)}</p>
-
-                <ProgressBar value={clubData.average_daily_rating} />
-                <CircularCount count={clubData.members_count} />
-              </CardBody>
-            </Card>
+            <CardHeader>
+              <Avatar src={clubData.icon} />
+              <div className="ml-4">
+                <h2 className="text-2xl">{clubData.name}</h2>
+              </div>
+            </CardHeader>
+            <CardBody>
+              <p>{clubData.description.slice(3, -4)}</p>
+              <div className="flex justify-center"> 
+                <Card className="w-[240px] h-[240px] mt-8 border-none bg-gradient-to-br from-violet-500 to-fuchsia-500">
+                  <CardBody className="justify-center items-center pb-0">
+                    <CircularProgress
+                      classNames={{
+                        svg: "w-36 h-36 drop-shadow-md",
+                        indicator: "stroke-white",
+                        track: "stroke-white/10",
+                        value: "text-3xl font-semibold text-white",
+                      }}
+                      formatOptions={{ style: "decimal" }}
+                      value={clubData.members_count}
+                      strokeWidth={4}
+                      showValueLabel={true}
+                      label="members"
+                    />
+                  </CardBody>
+                  <CardFooter className="justify-center items-center pt-0">
+                    <Chip
+                      classNames={{
+                        base: "border-1 border-white/30",
+                        content: "text-white/90 text-small font-semibold ",
+                      }}
+                      variant="bordered"
+                    >
+                     Rating:  {clubData.average_daily_rating}
+                    </Chip>
+                  </CardFooter>
+                </Card>
+              </div>
+            </CardBody>
+          </Card>
+          
+          
           ) : (
             <Spinner />
           )}
@@ -197,7 +228,7 @@ const Club = () => {
               <h2 className="text-2xl">Members Directory</h2>
             </CardHeader>
             <CardBody>
-              <Table aria-label="Members Directory">
+              <Table fullWidth aria-label="Members Directory">
                 <TableHeader>
                   <TableColumn>Username</TableColumn>
                   <TableColumn>Profile Link</TableColumn>
@@ -211,6 +242,7 @@ const Club = () => {
                           <Link
                             isBlock
                             isExternal
+                            showAnchorIcon
                             href={member.url}
                             target="_blank"
                             rel="noopener noreferrer"
@@ -226,42 +258,44 @@ const Club = () => {
                 </TableBody>
               </Table>
               <div className="flex flex-col items-center mt-4">
-          <div className="mb-2">
-            <Pagination
-              showShadow
-              color="success"
-              page={currentPage}
-              total={totalPages}
-              onChange={(page) => setCurrentPage(page)}
-            />
-          </div>
-          
-          <div className="flex items-center">
-            <Button
-              size="sm"
-              variant="flat"
-              color="success"
-              onPress={() =>
-                setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev))
-              }
-              className="mr-2"
-            >
-              Previous
-            </Button>
-            <Button
-              size="sm"
-              variant="flat"
-              color="success"
-              onPress={() =>
-                setCurrentPage((prev) => (prev < totalPages ? prev + 1 : prev))
-              }
-            >
-              Next
-            </Button>
-          </div>
-        </div>
-      </CardBody>
-    </Card>
+                <div className="mb-2">
+                  <Pagination
+                    showShadow
+                    color="success"
+                    page={currentPage}
+                    total={totalPages}
+                    onChange={(page) => setCurrentPage(page)}
+                  />
+                </div>
+
+                <div className="flex items-center">
+                  <Button
+                    size="sm"
+                    variant="flat"
+                    color="success"
+                    onPress={() =>
+                      setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev))
+                    }
+                    className="mr-2"
+                  >
+                    Previous
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="flat"
+                    color="success"
+                    onPress={() =>
+                      setCurrentPage((prev) =>
+                        prev < totalPages ? prev + 1 : prev
+                      )
+                    }
+                  >
+                    Next
+                  </Button>
+                </div>
+              </div>
+            </CardBody>
+          </Card>
           <Card>
             <CardHeader>
               <h2 className="text-2xl">Recent Matches</h2>
