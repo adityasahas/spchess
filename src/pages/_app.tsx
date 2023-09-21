@@ -10,7 +10,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <NextUIProvider>
       <Layout>
       <NextThemesProvider>
-      <main>
+      <main className="dark text-foreground bg-background">
         <Analytics/>
         <Component {...pageProps} />
       </main>
