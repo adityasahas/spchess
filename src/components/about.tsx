@@ -38,6 +38,11 @@ const officers = [
     role: "Secretary",
     chesscom: "TristanDaBomb",
   },
+  {
+  name: "Loc Tran",
+  role: "Publicity",
+  chesscom: "LuckyLMF",
+},
 ];
 const getInitials = (name: string) => {
   const names = name.split(" ");
