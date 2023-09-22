@@ -31,7 +31,19 @@ const Log: React.FC = () => {
   const [blackUser, setBlackUser] = useState("");
   const [winner, setWinner] = useState<"white" | "black" | null>(null);
   const [isValid, setIsValid] = useState(false);
-
+  const clearForm = () => {
+    setWhiteName("");
+    setWhiteEmail("");
+    setBlackName("");
+    setBlackEmail("");
+    setPgn("");
+    setDate("");
+    setGameType("");
+    setWhiteUser("");
+    setBlackUser("");
+    setWinner(null);
+    setIsValid(false);
+  };
   const handleOpenModal = () => {
     onOpen();
   };
@@ -61,6 +73,7 @@ const Log: React.FC = () => {
     });
 
     if (response.ok) {
+      clearForm();
       onClose();
     } else {
     }
