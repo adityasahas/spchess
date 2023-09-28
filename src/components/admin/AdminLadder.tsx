@@ -132,7 +132,7 @@ export default function AdminLadder() {
             Randomize Table
           </Button>
           <Button onClick={updateModal1.onOpen} color="secondary" fullWidth>
-            Update Database
+            Save Changes
           </Button>
         </div>
       </div>
