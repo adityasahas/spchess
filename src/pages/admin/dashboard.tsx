@@ -12,8 +12,8 @@ import {
   Code,
   Kbd,
 } from "@nextui-org/react";
-import { ConfirmationModal } from "../components/confirmation";
-import { LoginModal } from "../components/login";
+import { ConfirmationModal } from "../../components/confirmation";
+import { LoginModal } from "../../components/login";
 import { AdminTable } from "@/components/admin/AdminTable";
 const TournamentRegistrations: React.FC = () => {
   const [password, setPassword] = useState<string>("");

@@ -1,4 +1,3 @@
-// pages/api/registerTournament.ts
 import { NextApiRequest, NextApiResponse } from "next";
 import { connectToDb } from "../../utils/connectToDb";
 import { InsertOneResult, Document, Collection } from "mongodb";
