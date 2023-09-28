@@ -55,14 +55,31 @@ const TournamentRegistrations: React.FC = () => {
     }
   }, [authenticated]);
 
-  const handleAuthentication = () => {
-    if (password === process.env.NEXT_PUBLIC_PASSWORD) {
-      setAuthenticated(true);
-      loginModal.onClose();
-    } else {
-      alert("Incorrect password.");
+  const handleAuthentication = async () => {
+    try {
+      const response = await fetch('/api/logs', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          password: password,
+        }),
+      });
+  
+      if (response.ok) {
+        setAuthenticated(true);
+        loginModal.onClose();
+      } else {
+        const errorMessage = await response.text();
+        alert(errorMessage);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred. Please try again.');
     }
   };
+  
 
   const handleFinalConfirmation = async () => {
     await fetch("/api/fetchTournamentRegistrations", { method: "DELETE" });
