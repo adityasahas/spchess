@@ -260,6 +260,7 @@ const Club = () => {
               <div className="flex flex-col items-center mt-4">
                 <div className="mb-2">
                   <Pagination
+                  showControls
                     showShadow
                     color="success"
                     page={currentPage}
