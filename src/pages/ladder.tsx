@@ -1,5 +1,3 @@
-// components/LadderComponent.js
-
 import React, { useEffect, useState, useMemo } from "react";
 import {
   Table,
@@ -9,6 +7,7 @@ import {
   TableRow,
   TableCell,
   Pagination,
+  Spinner,
 } from "@nextui-org/react";
 
 interface LadderItem {
@@ -35,6 +34,7 @@ const getValue = (item: LadderItem, key: string) => {
 export default function LadderComponent() {
   const [rows, setRows] = useState<LadderItem[]>([]);
   const [page, setPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);  // New isLoading state
   const rowsPerPage = 6;
 
   const pages = useMemo(
@@ -51,13 +51,19 @@ export default function LadderComponent() {
   useEffect(() => {
     fetch("/api/ladder")
       .then((response) => response.json())
-      .then((data) => setRows(data));
+      .then((data) => {
+        setRows(data);
+        setIsLoading(false);  // Set isLoading to false once data is fetched
+      });
   }, []);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <h1 className="font-bold text-4xl text-center mb-8">Ladder Rankings</h1>
-      <div className="shadow overflow-hidden sm:rounded-lg w-full md:w-3/4 lg:w-1/2">
+      <h1 className="font-bold text-4xl text-center mb-8">ladder rankings.</h1>
+      {isLoading ? (  // Render spinner if isLoading is true
+        <Spinner size="lg" />
+      ) : (
+        <div className="shadow overflow-hidden sm:rounded-lg w-full md:w-3/4 lg:w-1/2">
         <Table
           isStriped
           aria-label="Ladder Table"
@@ -97,6 +103,7 @@ export default function LadderComponent() {
           </TableBody>
         </Table>
       </div>
+        )}
     </div>
   );
 }

@@ -115,10 +115,11 @@ export default function AdminLadder() {
     setRows(randomizedRows.map((item, index) => ({ ...item, pos: index + 1 })));
   };
 
-  return (
-    <div className="container mx-auto p-6  rounded-lg shadow-md">
-      <div className="flex justify-between mb-6">
-        <div className="flex space-x-5">
+  return  (
+    <div className="container mx-auto p-6 md:p-12 rounded-lg shadow-md">
+      <div className="flex flex-col md:flex-row justify-between mb-6">
+        <div className="flex flex-col md:flex-row space-y-5 md:space-y-0 md:space-x-5 w-full md:w-auto">
+        
           <Button onClick={onOpen} color="primary" fullWidth>
             Add Player
           </Button>
