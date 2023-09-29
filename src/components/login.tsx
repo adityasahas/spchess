@@ -44,6 +44,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
             </ModalHeader>
             <ModalBody>
               <Input
+                autoFocus
                 label="password"
                 variant="underlined"
                 type="password"

@@ -141,19 +141,6 @@ export default function AdminLadder() {
         aria-label="Admin Table"
         className="min-w-full"
         isStriped
-        bottomContent={
-          <div className="flex w-full justify-center">
-            <Pagination
-              
-              
-              showShadow
-              color="success"
-              page={page}
-              total={pages}
-              onChange={(page) => setPage(page)}
-            />
-          </div>
-        }
       >
         <TableHeader>
           <TableColumn className="px-6 py-3 text-left text-xs font-medium ">
@@ -167,7 +154,7 @@ export default function AdminLadder() {
           </TableColumn>
         </TableHeader>
         <TableBody>
-          {items.map((item, index) => (
+          {rows.map((item, index) => (
             <TableRow key={item._id}>
               <TableCell className="px-6 py-4 whitespace-nowrap">
                 {item.pos}
@@ -186,7 +173,7 @@ export default function AdminLadder() {
                 </Button>
                 <Button
                   onClick={() => handleMove(index, 1)}
-                  color="danger"
+                  color="warning"
                   variant="light"
                 >
                   move down

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableHeader,
@@ -6,7 +6,6 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Pagination,
   Spinner,
 } from "@nextui-org/react";
 
@@ -33,76 +32,52 @@ const getValue = (item: LadderItem, key: string) => {
 
 export default function LadderComponent() {
   const [rows, setRows] = useState<LadderItem[]>([]);
-  const [page, setPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(true);  // New isLoading state
-  const rowsPerPage = 6;
-
-  const pages = useMemo(
-    () => Math.ceil(rows.length / rowsPerPage),
-    [rows.length, rowsPerPage]
-  );
-
-  const items = useMemo(() => {
-    const start = (page - 1) * rowsPerPage;
-    const end = start + rowsPerPage;
-    return rows.slice(start, end);
-  }, [page, rows, rowsPerPage]);
+  const [isLoading, setIsLoading] = useState(true);  
 
   useEffect(() => {
     fetch("/api/ladder")
       .then((response) => response.json())
       .then((data) => {
         setRows(data);
-        setIsLoading(false);  // Set isLoading to false once data is fetched
+        setIsLoading(false); 
       });
   }, []);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <h1 className="font-bold text-4xl text-center mb-8">ladder rankings.</h1>
-      {isLoading ? (  // Render spinner if isLoading is true
+      {isLoading ? (  
         <Spinner size="lg" />
       ) : (
         <div className="shadow overflow-hidden sm:rounded-lg w-full md:w-3/4 lg:w-1/2">
-        <Table
-          isStriped
-          aria-label="Ladder Table"
-          className="min-w-full divide-y divide-gray-200"
-          bottomContent={
-            <div className="flex w-full justify-center">
-              <Pagination
-                showShadow
-                color="success"
-                page={page}
-                total={pages}
-                onChange={(page) => setPage(page)}
-              />
-            </div>
-          }
-        >
-          <TableHeader columns={columns} className="text-center">
-            {(column) => (
-              <TableColumn
-                key={column.key}
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >
-                {column.label}
-              </TableColumn>
-            )}
-          </TableHeader>
-          <TableBody items={items}>
-            {(item) => (
-              <TableRow key={item._id}>
-                {(columnKey) => (
-                  <TableCell className="px-6 py-4 whitespace-nowrap">
-                    {getValue(item, columnKey as string)}
-                  </TableCell>
-                )}
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
+          <Table
+            isStriped
+            aria-label="Ladder Table"
+            className="min-w-full divide-y divide-gray-200"
+          >
+            <TableHeader columns={columns} className="text-center">
+              {(column) => (
+                <TableColumn
+                  key={column.key}
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  {column.label}
+                </TableColumn>
+              )}
+            </TableHeader>
+            <TableBody items={rows}>
+              {(item) => (
+                <TableRow key={item._id}>
+                  {(columnKey) => (
+                    <TableCell className="px-6 py-4 whitespace-nowrap">
+                      {getValue(item, columnKey as string)}
+                    </TableCell>
+                  )}
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
         )}
     </div>
   );
