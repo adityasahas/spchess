@@ -21,7 +21,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   const menuItems = [
     { title: "Home", link: "/", disabled: false },
-    { title: "Tournament Draw ", link: "#", disabled: true },
     { title: "Game Archive", link: "/games", disabled: false },
     { title: "Chess.com Club", link: "/club", disabled: false },
   ];
@@ -35,7 +34,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     },
     { title: "Game Archive", link: "/games", disabled: false },
     { title: "Chess.com Club", link: "/club", disabled: false },
-    { title: "Admin Portal", link: "/admin", disabled: false },
+    { title: "Admin Portal", link: "/admin/dashboard", disabled: false },
+    { title: "Ladder Admin View", link: "/admin/ladder", disabled: false },
+    { title: "Ladder ", link: "/ladder", disabled: false },
+
     { title: "Log a game", link: "/log", disabled: false },
   ];
   const footerLinks = [
@@ -99,8 +101,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
         <NavbarContent justify="end">
           <NavbarItem className="hidden lg:flex">
-            <Link isBlock color="success" href="/log">
-              Log a Game
+            <Link isBlock color="success" href="/ladder">
+              Ladder
             </Link>
           </NavbarItem>
           <NavbarItem>
