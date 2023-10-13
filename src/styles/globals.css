@@ -15,6 +15,12 @@
     --background-end-rgb: 0, 0, 0;
   }
 }
+@font-face {
+  font-family: 'uber';
+  src: url(/UberMoveMedium.otf) format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
 
 body {
   color: rgb(var(--foreground-rgb));

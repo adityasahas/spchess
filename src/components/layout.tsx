@@ -21,7 +21,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   const menuItems = [
     { title: "Home", link: "/", disabled: false },
-    { title: "Game Archive", link: "/games", disabled: false },
+    { title: "Challenges", link: "/challenges", disabled: false },
     { title: "Chess.com Club", link: "/club", disabled: false },
   ];
 
@@ -145,7 +145,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <div className="grid grid-cols-3 justify-between gap-4">
               {footerLinks.map(({ title, items, links }) => (
                 <ul key={title}>
-                  <li className="mb-3 font-medium text-gray-600 opacity-60 text-sm">
+                  <li className="mb-3 font-medium opacity-60 text-sm">
                     {title}
                   </li>
                   {items.map((item, index) => (
