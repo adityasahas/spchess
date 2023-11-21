@@ -70,21 +70,7 @@ const TournamentRegistration: React.FC = () => {
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           isRequired
         />
-        <Input
-          label="chess.com username"
-          value={formData.chessUsername}
-          onChange={(e) => setFormData({ ...formData, chessUsername: e.target.value })}
-          variant="underlined"
-          isRequired
-        />
-        <Input
-          label="rating"
-          type="number"
-          value={formData.rating}
-          onChange={(e) => setFormData({ ...formData, rating: e.target.value })}
-          variant="underlined"
-          isRequired
-        />
+       
         <Button className="mt-20" color="success" fullWidth variant="shadow" isLoading={isLoading} onPress={handleSubmit} isDisabled={!allFieldsFilled}>
           register
         </Button>
