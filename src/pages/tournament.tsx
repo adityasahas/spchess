@@ -49,7 +49,7 @@ const TournamentRegistration: React.FC = () => {
     <div className="flex justify-center items-center h-screen">
       <div className="p-10">
         <h1 className="font-bold text-5xl text-center mb-4">register for next tournament.</h1>
-        <h1 className="font-bold text-3xl text-center mb-4">november-december.</h1>
+        <h1 className="font-bold text-3xl text-center mb-4">december 4, december 8.</h1>
         <Input
           label="name"
           value={formData.name}
