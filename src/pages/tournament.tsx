@@ -71,7 +71,7 @@ const TournamentRegistration: React.FC = () => {
           isRequired
         />
        
-        <Button className="mt-20" color="success" fullWidth variant="shadow" isLoading={isLoading} onPress={handleSubmit} isDisabled={!allFieldsFilled}>
+        <Button className="mt-20" color="success" fullWidth variant="shadow" isLoading={isLoading} onPress={handleSubmit}>
           register
         </Button>
 
