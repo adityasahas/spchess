@@ -80,7 +80,7 @@ const TournamentRegistration: React.FC = () => {
             {(onClose) => (
               <>
                 <ModalHeader className="font-bold text-3xl text-center mb-4">error</ModalHeader>
-                <ModalBody>you are already registered in this tournament.</ModalBody>
+                <ModalBody>there was an error, please try again. maybe your already registered? give a comment in google classroom if theres an issue</ModalBody>
                 <ModalFooter>
                   <Button color="danger" variant="light" onPress={onClose}>
                     close
