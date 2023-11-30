@@ -9,6 +9,10 @@ const nextConfig = {
         destination: 'https://forms.gle/Kf9MMamsGefABYLm8',
         permanent: true, 
       },
+    {
+    source: "/register",
+    destination: "https://docs.google.com/forms/d/e/1FAIpQLSegXXPLh07SWnrUMq_xB-tZTaLgeegsITC4WhjiMqZtjDL7Dg/viewform?usp=send_form",
+    permanent: true,},
     ];
   },
 };
